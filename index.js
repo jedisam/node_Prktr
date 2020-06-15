@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
 
   // overview page
-  if (req.url === "/" || req.url === "overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, {
       "Content-Type": "text/html",
     });
@@ -66,10 +66,16 @@ const server = http.createServer((req, res) => {
     res.end(output);
     // res.end ('This is the Overview');
     // product page
-  } else if (req.url === "/product") {
-    res.end("This is the products Page!");
+  } else if (pathname === "/product") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+    });
+    const product = dataObj[query.id];
+    const output = replaceTemplate(tempProduct, product);
+    res.end(output);
+
     //API
-  } else if (req.url === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-Type": "application/json",
     });
