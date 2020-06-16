@@ -1,12 +1,26 @@
-const fs = require("fs");
+const fs = require('fs');
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, "utf-8")
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8')
 );
+
+exports.checkID = (req, res, next, val) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({ status: 'Fail', msg: 'Invalid Id' });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({ status: 'fail', msg: 'Bad Request!' });
+  }
+  next();
+};
 
 exports.getAllTours = (req, res) => {
   res.status(200).json({
-    status: "success",
+    status: 'success',
     results: tours.length,
     data: {
       tours,
@@ -15,10 +29,9 @@ exports.getAllTours = (req, res) => {
 };
 
 exports.getTour = (req, res) => {
-  const tour = tours.find((tour) => tour.id.toString() === req.params.id);
-  if (!tour) return res.status(404).json({ status: "Fail", msg: "Invalid Id" });
+  const tour = tours.find((el) => el.id.toString() === req.params.id);
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       tour,
     },
@@ -26,14 +39,16 @@ exports.getTour = (req, res) => {
 };
 exports.createTour = (req, res) => {
   const newId = tours.length + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+  const newTour = { id: newId, ...req.body };
   tours.push(newTour);
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
+      if (err) throw err;
       res.status(201).json({
-        status: "success",
+        status: 'success',
         data: {
           tour: newTour,
         },
@@ -43,23 +58,17 @@ exports.createTour = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({ status: "Fail", msg: "Invalid Id" });
-  }
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
-      tour: "Updated Tour",
+      tour: 'Updated Tour',
     },
   });
 };
 
 exports.deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({ status: "Fail", msg: "Invalid Id" });
-  }
   res.status(204).json({
-    status: "success",
+    status: 'success',
     data: {
       tour: null,
     },
