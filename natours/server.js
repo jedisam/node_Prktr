@@ -1,9 +1,10 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const app = require('./app.js');
+
 // require("dotenv/config");
-// console.log(process.env);
 dotenv.config({ path: './config.env' });
+const app = require('./app.js');
+// console.log(process.env);
 
 const DB = process.env.DATABASE;
 
