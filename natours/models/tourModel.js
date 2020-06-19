@@ -53,6 +53,10 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -70,9 +74,26 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-tourSchema.post('save', function (doc, next) {
-  
+// tourSchema.post('save', function (doc, next) {
+
+//   next();
+// });
+
+// Query middleware
+tourSchema.pre(/^find/, function (next) {
+  this.start = Date.now();
+  this.find({ secretTour: { $ne: true } });
   next();
+});
+
+tourSchema.post(/^find/, function (doc, next) {
+  console.log(`Query took ${Date.now() - this.start} milleseconds`);
+  next();
+});
+
+// Aggregation middleware
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline.unshift({ $match: { secretTour: { $ne: true } } });
 });
 
 // eslint-disable-next-line no-multi-assign
