@@ -1,6 +1,11 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 // require("dotenv/config");
 dotenv.config({ path: './config.env' });
 const app = require('./app.js');
@@ -21,7 +26,14 @@ mongoose
 
 const PORT = 9000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Server started on Port ${PORT}...`);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
