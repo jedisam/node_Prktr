@@ -31,8 +31,9 @@ exports.updateMe = async (req, res, next) => {
         400
       )
     );
-  // 2) update user document
+  // 2) filtered unwanted objects
   const filteredBody = filterObj(req.body, 'name', 'email');
+  // 2) update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
@@ -42,6 +43,14 @@ exports.updateMe = async (req, res, next) => {
     user: updatedUser,
   });
 };
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
 
 exports.getUser = (req, res) => {
   res.status(500).json({
