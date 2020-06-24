@@ -20,7 +20,7 @@ const createSendToken = (user, statusCode, res) => {
       user,
     },
   });
-}
+};
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -42,8 +42,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Invalid Credentials', 401));
-    createSendToken(user, 200, res);
-
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -153,11 +152,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) update passwordChangedAt propert of the user
 
   // 4) log the user in
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
+
   next();
 });
 
@@ -173,10 +169,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.confirmPassword = req.body.confirmNewPassword;
   await user.save();
   // 3) log user in, send jwt
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
+
   next();
 });
