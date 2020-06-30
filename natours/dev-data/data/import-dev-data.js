@@ -6,7 +6,8 @@ const Tour = require('../../models/tourModel');
 // console.log(process.env);
 dotenv.config({ path: './config.env' });
 
-const DB = process.env.DATABASE;
+// console.log('DB', process.env.DATABASE);
+const DB = 'mongodb://localhost/natours';
 
 mongoose
   .connect(DB, {

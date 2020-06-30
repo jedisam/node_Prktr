@@ -10,7 +10,6 @@ process.on('uncaughtException', (err) => {
 dotenv.config({ path: './config.env' });
 const app = require('./app.js');
 // console.log(process.env);
-
 const DB = process.env.DATABASE;
 
 mongoose
@@ -24,7 +23,7 @@ mongoose
     console.log('DB connected successfully!');
   });
 
-const PORT = 9000;
+const PORT = 7000;
 
 const server = app.listen(PORT, () => {
   // eslint-disable-next-line no-console

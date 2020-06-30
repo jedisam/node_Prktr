@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoute');
 const userRouter = require('./routes/userRoute');
+const reviewRouter = require('./routes/reviewRoute');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
@@ -54,6 +55,7 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // unhandled routes
 app.all('*', (req, res, next) => {
