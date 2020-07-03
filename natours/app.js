@@ -11,13 +11,14 @@ const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoute');
 const userRouter = require('./routes/userRoute');
 const reviewRouter = require('./routes/reviewRoute');
+const viewRouter = require('./routes/viewRoute');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
 // template engine
+app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'view'));
-app.set('view engine', 'jade');
 
 // serving static file
 app.use(express.static(path.join(__dirname, 'public')));
@@ -58,9 +59,8 @@ app.use(
     ],
   })
 );
-app.get('/', (req, res) => {
-  res.status(200).render('base');
-});
+
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
