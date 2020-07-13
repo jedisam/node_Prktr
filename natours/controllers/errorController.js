@@ -1,7 +1,6 @@
 const AppError = require('../utils/appError');
 
 const handleCastErrorDb = (err) => {
-  console.log(err);
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
@@ -63,7 +62,7 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     if (error.kind === 'ObjectId') {
       error = handleCastErrorDb(error);
-      sendErrorProd(error, res);
+      // sendErrorProd(error, res);
     }
     if (error.code === 11000) {
       error = handleDuplicateFieldsDb(error);
