@@ -49,7 +49,7 @@ router
     protect,
     restrictTo('admin', 'lead-guide'),
     uploadTourImages,
-    resizeTourImages,
+    // resizeTourImages,
     updateTour
   )
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);

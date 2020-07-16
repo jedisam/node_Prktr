@@ -18,7 +18,7 @@ const app = express();
 
 // template engine
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'view'));
+app.set('views', path.join(__dirname, 'views'));
 
 // serving static file
 app.use(express.static(path.join(__dirname, 'public')));
