@@ -57,6 +57,14 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // 1) check if token exists
@@ -90,29 +98,34 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   // GRant access to protected route
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
 // only for rendered pages, no errors
 
-// exports.isLoggedIn = catchAsync(async (req, res, next) => {
-//   if (req.cookies.jwt) {
-//     // 1) verify token
-//     const decoded = await promisify(jwt.verify)(
-//       req.cookiea.jwt,
-//       process.env.JWT_SECRET
-//     );
-//     //2) check if user still exists
-//     const currentUser = await User.findById(decoded.id);
-//     if (!currentUser) return next();
-//     //3) check if user changed password after token was issued
-//     if (currentUser.changedPasswordAfter(decoded.iat)) return next();
-//     // There is a logged in user
-//     res.locals.user = currentUser;
-//     return next();
-//   }
-//   next();
-// });
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      //2) check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) return next();
+      //3) check if user changed password after token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) return next();
+      // There is a logged in user
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  next();
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
@@ -193,15 +206,16 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
+  console.log('reacheeed');
   // 1) get user from the collection
   const user = await User.findById(req.user.id).select('+password');
   // 2) check if posted currentUser password is correct
-  const { password } = req.body;
-  if (!(await user.correctPassword(password, user.password)))
+  const { passwordCurrent } = req.body;
+  if (!(await user.correctPassword(passwordCurrent, user.password)))
     return next(new AppError('Your Current Password is Incorrect!', 401));
   // 4) if so update the password
-  user.password = req.body.newPassword;
-  user.confirmPassword = req.body.confirmNewPassword;
+  user.password = req.body.password;
+  user.confirmPassword = req.body.passwordConfirm;
   await user.save();
   // 3) log user in, send jwt
   createSendToken(user, 200, res);
