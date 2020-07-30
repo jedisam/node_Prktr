@@ -8492,12 +8492,17 @@ var logout = /*#__PURE__*/function () {
             _context2.next = 3;
             return (0, _axios.default)({
               method: 'GET',
-              url: 'http://127.0.0.1:3000/api/v1/users/logout'
+              url: 'http://localhost:7000/api/v1/users/logout'
             });
 
           case 3:
             res = _context2.sent;
-            if (res.data.status = 'success') location.reload(true);
+
+            if (res.data.status = 'success') {
+              (0, _alert.showAlert)('success', 'Logged out successfully!');
+              location.reload(true);
+            }
+
             _context2.next = 11;
             break;
 
@@ -8547,36 +8552,40 @@ var updateSettings = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            url = type === 'password' ? 'http://127.0.0.1:3000/api/v1/users/updateMyPassword' : 'http://127.0.0.1:3000/api/v1/users/updateMe';
-            _context.next = 4;
+            console.log('Heyyyyy');
+            console.log('Update ', type);
+            _context.prev = 2;
+            url = type === 'password' ? 'http://localhost:7000/api/v1/users/updateMyPassword' : 'http://localhost:7000/api/v1/users/updateMe';
+            _context.next = 6;
             return (0, _axios.default)({
               method: 'PATCH',
               url: url,
               data: data
             });
 
-          case 4:
+          case 6:
             res = _context.sent;
 
             if (res.data.status === 'success') {
+              console.log('Updated');
               (0, _alert.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully!"));
             }
 
-            _context.next = 11;
+            _context.next = 14;
             break;
 
-          case 8:
-            _context.prev = 8;
-            _context.t0 = _context["catch"](0);
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](2);
+            console.log('err', _context.t0.response);
             (0, _alert.showAlert)('error', _context.t0.response.data.message);
 
-          case 11:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[2, 10]]);
   }));
 
   return function updateSettings(_x, _x2) {
@@ -8946,7 +8955,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41639" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37613" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -9123,4 +9132,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=/js/bundle.js.map
+//# sourceMappingURL=/bundle.js.map
