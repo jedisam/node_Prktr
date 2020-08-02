@@ -12,7 +12,7 @@ const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoute');
 const userRouter = require('./routes/userRoute');
 const reviewRouter = require('./routes/reviewRoute');
-const bookingRouter = require('./routes/bookingRoute');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoute');
 const globalErrorHandler = require('./controllers/errorController');
 
