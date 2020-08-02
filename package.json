@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "mongoose": "^5.9.19"
   }
 }
